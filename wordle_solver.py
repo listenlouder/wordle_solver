@@ -18,20 +18,23 @@ def get_all_five_letter_words():
 
 
 # results are in the format of 'gbygb']
-def check_guess(guess, results, all_words):
+def check_guess(guess, results, all_words, confirmed_letters):
     count = 0
     for result in results:
         if result == 'b':
-            words_to_remove = filter_black(guess[count], all_words)
-            for word in words_to_remove:
-                all_words.remove(word)
+            if guess[count] not in confirmed_letters:
+                words_to_remove = filter_black(guess[count], all_words)
+                for word in words_to_remove:
+                    all_words.remove(word)
             count += 1
         elif result == 'g':
+            confirmed_letters.append(guess[count])
             words_to_remove = filter_green(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
             count += 1
         elif result == 'y':
+            confirmed_letters.append(guess[count])
             words_to_remove = filter_yellow(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
@@ -39,12 +42,11 @@ def check_guess(guess, results, all_words):
         else:
             exit('Invalid results value. Should be g, b, or y')
 
-    return all_words
+    return all_words, confirmed_letters
 
 
-def filter_green(letter, pos, all_words):
+def filter_green(letter, pos, all_words, ):
     words_to_remove = []
-
     for word in all_words:
         if word[pos] != letter:
             words_to_remove.append(word)
@@ -62,7 +64,7 @@ def filter_black(letter, all_words):
     return words_to_remove
 
 
-def filter_yellow(letter, pos, all_words):
+def filter_yellow(letter, pos, all_words, ):
     words_to_remove = []
     for word in all_words:
         if letter not in word:
@@ -72,9 +74,9 @@ def filter_yellow(letter, pos, all_words):
 
     return words_to_remove
 
-
 def solve():
     all_words = get_all_five_letter_words()
+    confirmed_letters = []
 
     while True:
         guess = input("Enter your guess: ")
@@ -91,16 +93,16 @@ def solve():
             print("Hey you won")
             break
 
-        valid_words = check_guess(guess, results, all_words)
+        valid_words, confirmed_letters = check_guess(guess, results, all_words, confirmed_letters)
         all_words = valid_words
 
-        if 100 > len(valid_words) > 2:
+        if 100 > len(valid_words) > 1:
             print("You're close. Here's the remaining valid words: %s" % valid_words)
 
-        if len(valid_words) > 1:
+        elif len(valid_words) > 1:
             print("There are %s valid guesses left" % len(valid_words))
 
-        if len(valid_words) == 1:
+        elif len(valid_words) == 1:
             print("This is the answer: %s" % valid_words[0])
             break
 
