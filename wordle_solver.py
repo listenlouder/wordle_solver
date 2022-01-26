@@ -26,19 +26,30 @@ def check_guess(guess, results, all_words, confirmed_letters):
                 words_to_remove = filter_black(guess[count], all_words)
                 for word in words_to_remove:
                     all_words.remove(word)
+
+            if guess[count] in confirmed_letters:
+                words_to_remove = filter_dup_black(guess[count], count, all_words)
+                for word in words_to_remove:
+                    all_words.remove(word)
+
             count += 1
+
         elif result == 'g':
             confirmed_letters.append(guess[count])
             words_to_remove = filter_green(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
+
             count += 1
+
         elif result == 'y':
             confirmed_letters.append(guess[count])
             words_to_remove = filter_yellow(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
+
             count += 1
+
         else:
             exit('Invalid results value. Should be g, b, or y')
 
@@ -63,8 +74,17 @@ def filter_black(letter, all_words):
 
     return words_to_remove
 
+# If a letter is green but a second one is black we need to filter the list on that position
+def filter_dup_black(letter, pos, all_words):
+    words_to_remove = []
+    for word in all_words:
+        if word[pos] == letter:
+            words_to_remove.append(word)
 
-def filter_yellow(letter, pos, all_words, ):
+    return words_to_remove
+
+
+def filter_yellow(letter, pos, all_words):
     words_to_remove = []
     for word in all_words:
         if letter not in word:
