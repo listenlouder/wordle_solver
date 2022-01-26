@@ -35,7 +35,6 @@ def check_guess(guess, results, all_words, confirmed_letters):
             count += 1
 
         elif result == 'g':
-            confirmed_letters.append(guess[count])
             words_to_remove = filter_green(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
@@ -43,7 +42,6 @@ def check_guess(guess, results, all_words, confirmed_letters):
             count += 1
 
         elif result == 'y':
-            confirmed_letters.append(guess[count])
             words_to_remove = filter_yellow(guess[count], count, all_words)
             for word in words_to_remove:
                 all_words.remove(word)
@@ -108,6 +106,12 @@ def solve():
         while len(results) != 5:
             print('Typo in results')
             results = input("Enter your results: ")
+
+        count = 0
+        for letter in results:
+            if letter in ['g', 'y']:
+                confirmed_letters.append(guess[count])
+            count += 1
 
         if results == 'ggggg':
             print("Hey you won")
